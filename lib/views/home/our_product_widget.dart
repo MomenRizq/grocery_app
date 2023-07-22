@@ -2,6 +2,7 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
+import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/add_to_card_widget_home.dart';
@@ -12,14 +13,14 @@ import 'package:grocery_app/views/common_widgets/heart_button.dart';
 import 'package:provider/provider.dart';
 
 
-class OurProductItem extends StatefulWidget {
-  const OurProductItem({Key? key}) : super(key: key);
+class OurProductWidget extends StatefulWidget {
+  const OurProductWidget({Key? key}) : super(key: key);
 
   @override
-  State<OurProductItem> createState() => _OurProductItemState();
+  State<OurProductWidget> createState() => _OurProductWidgetState();
 }
 
-class _OurProductItemState extends State<OurProductItem> {
+class _OurProductWidgetState extends State<OurProductWidget> {
   final _quantityTextController = TextEditingController();
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _OurProductItemState extends State<OurProductItem> {
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
+    final productModel = Provider.of<ProductModel>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -52,7 +54,7 @@ class _OurProductItemState extends State<OurProductItem> {
           borderRadius: BorderRadius.circular(12),
           child: Column(children: [
             FancyShimmerImage(
-              imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+              imageUrl: productModel.imageUrl,
               height: size.width * 0.21,
               width: size.width * 0.2,
               boxFit: BoxFit.fill,
@@ -65,7 +67,7 @@ class _OurProductItemState extends State<OurProductItem> {
                   Flexible(
                     flex: 3,
                     child: CustomTextWidget(
-                      text: "apple",
+                      text: productModel.title,
                       color: color,
                       maxLines: 1,
                       textSize: 18,
@@ -89,8 +91,8 @@ class _OurProductItemState extends State<OurProductItem> {
                  Flexible(
                     flex: 3,
                     child: PriceWidget(
-                      salePrice:3.5 ,
-                      price:7.8 ,
+                      salePrice:productModel.salePrice ,
+                      price:productModel.price,
                       textPrice: _quantityTextController.text  ,
                       isOnSale: true,
                     ),
@@ -99,18 +101,18 @@ class _OurProductItemState extends State<OurProductItem> {
                     child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          flex: 4,
+                          flex: 6,
                           child: FittedBox(
                             child: CustomTextWidget(
-                              text: /*productModel.isPiece ? 'Piece' :*/ 'kg',
+                              text: productModel.isPiece ? 'Piece' : 'kg',
                               color: color,
-                              textSize: 20,
+                              textSize:productModel.isPiece ? 28 : 18,
                               isTitle: true,
                             ),
                           ),
                         ),
                         const SizedBox(
-                          width: 4,
+                          width: 1,
                         ),
                         Flexible(
                             flex: 4,

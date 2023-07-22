@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/consts/consts.dart';
+import 'package:grocery_app/models/products_model.dart';
+import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/views/common_widgets/back_widget.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
-import 'package:grocery_app/views/home/our_product_item.dart';
+import 'package:grocery_app/views/home/our_product_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../services/utils.dart';
 
 class OurProductScreen extends StatefulWidget {
   static const routeName = "/OurProductScreenState";
+
   const OurProductScreen({Key? key}) : super(key: key);
 
   @override
@@ -17,6 +22,7 @@ class OurProductScreen extends StatefulWidget {
 class _OurProductScreenState extends State<OurProductScreen> {
   final TextEditingController? _searchTextController = TextEditingController();
   final FocusNode _searchTextFocusNode = FocusNode();
+
   @override
   void dispose() {
     _searchTextController!.dispose();
@@ -28,6 +34,8 @@ class _OurProductScreenState extends State<OurProductScreen> {
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
+    final productProviders = Provider.of<ProductsProvider>(context);
+    List<ProductModel> allProducts = productProviders.getProducts;
     return Scaffold(
       appBar: AppBar(
         leading: BackWidget(),
@@ -57,12 +65,12 @@ class _OurProductScreenState extends State<OurProductScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                    const BorderSide(color: Colors.greenAccent, width: 1),
+                        const BorderSide(color: Colors.greenAccent, width: 1),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide:
-                    const BorderSide(color: Colors.greenAccent, width: 1),
+                        const BorderSide(color: Colors.greenAccent, width: 1),
                   ),
                   hintText: "What's in your mind",
                   prefixIcon: const Icon(Icons.search),
@@ -87,8 +95,10 @@ class _OurProductScreenState extends State<OurProductScreen> {
             padding: EdgeInsets.zero,
             // crossAxisSpacing: 10,
             childAspectRatio: size.width / (size.height * 0.59),
-            children: List.generate(10, (index) {
-              return const OurProductItem();
+            children: List.generate(allProducts.length, (index) {
+              return ChangeNotifierProvider.value(
+                value: allProducts[index],
+                child:OurProductWidget());
             }),
           ),
         ]),
