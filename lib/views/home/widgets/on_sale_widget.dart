@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/models/products_model.dart';
+import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/price_widget.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/home/on_sale_item.dart';
+import 'package:provider/provider.dart';
 
 class OnSaleWidget extends StatelessWidget {
   const OnSaleWidget({Key? key, this.isInner = false} ) : super(key: key);
@@ -14,6 +17,9 @@ class OnSaleWidget extends StatelessWidget {
     final Color color = Utils(context).color;
     final theme = Utils(context).getTheme;
     Size size = Utils(context).getScreenSize;
+    final productProviders = Provider.of<ProductsProvider>(context);
+    List<ProductModel> productsOnSale = productProviders.getOnSaleProducts;
+
     return  Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
@@ -48,10 +54,12 @@ class OnSaleWidget extends StatelessWidget {
             child: SizedBox(
               height: size.height * 0.24,
               child: ListView.builder(
-                  itemCount: 10,
+                  itemCount: productsOnSale.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (ctx, index) {
-                    return const OnSaleItems();
+                    return ChangeNotifierProvider.value(
+                        value: productsOnSale[index],
+                        child: OnSaleItems());
                   }),
             ),
           ),

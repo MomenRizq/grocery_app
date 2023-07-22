@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/widgets/add_to_card_widget_details.dart';
+import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
-
+import 'package:provider/provider.dart';
 
 class ProductDetailsBody extends StatefulWidget {
-  const ProductDetailsBody({Key? key}) : super(key: key);
+  const ProductDetailsBody({Key? key, required this.id}) : super(key: key);
+  final String id;
 
   @override
   State<ProductDetailsBody> createState() => _ProductDetailsBodyState();
@@ -24,9 +26,16 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
     _quantityTextController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
+    final productProviders = Provider.of<ProductsProvider>(context);
+    final getCurrProduct = productProviders.findProdById(widget.id);
+    double usedPrice = getCurrProduct.isOnSale
+        ? getCurrProduct.salePrice
+        : getCurrProduct.price;
+    double totalPrice = usedPrice * int.parse(_quantityTextController.text);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -45,7 +54,7 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
               children: [
                 Flexible(
                   child: CustomTextWidget(
-                    text: 'title',
+                    text: getCurrProduct.title,
                     color: color,
                     textSize: 25,
                     isTitle: true,
@@ -62,13 +71,13 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CustomTextWidget(
-                  text: '\$2.59',
+                  text: '\$${usedPrice.toStringAsFixed(2)}',
                   color: Colors.green,
                   textSize: 22,
                   isTitle: true,
                 ),
                 CustomTextWidget(
-                  text: '/Kg',
+                  text: getCurrProduct.isPiece ? '/Piece' : '/Kg',
                   color: color,
                   textSize: 12,
                   isTitle: false,
@@ -77,9 +86,9 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                   width: 10,
                 ),
                 Visibility(
-                  visible: true,
+                  visible: getCurrProduct.isOnSale ? true : false,
                   child: Text(
-                    '\$3.9',
+                    '\$${getCurrProduct.price.toStringAsFixed(2)}',
                     style: TextStyle(
                         fontSize: 15,
                         color: color,
@@ -88,8 +97,8 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 4, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                       color: const Color.fromRGBO(63, 200, 101, 1),
                       borderRadius: BorderRadius.circular(5)),
@@ -169,11 +178,80 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
             ],
           ),
           const Spacer(),
-          AddToCardWidgetDetails(quantityTextController: _quantityTextController,),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextWidget(
+                        text: 'Total',
+                        color: Colors.red.shade300,
+                        textSize: 20,
+                        isTitle: true,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      FittedBox(
+                        child: Row(
+                          children: [
+                            CustomTextWidget(
+                              text: '\$${totalPrice.toStringAsFixed(2)}/',
+                              color: color,
+                              textSize: 20,
+                              isTitle: true,
+                            ),
+                            CustomTextWidget(
+                              text: '${_quantityTextController.text}Kg',
+                              color: color,
+                              textSize: 16,
+                              isTitle: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Flexible(
+                  child: Material(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(10),
+                      child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: CustomTextWidget(
+                              text: 'Add to cart',
+                              color: Colors.white,
+                              textSize: 18)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
+
   Widget _quantityController({
     required Function fun,
     required IconData icon,

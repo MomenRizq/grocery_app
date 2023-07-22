@@ -46,10 +46,8 @@ class _OurProductWidgetState extends State<OurProductWidget> {
         color: Theme.of(context).cardColor,
         child: InkWell(
           onTap: () {
-            // GlobalMethods.navigateTo(
-            //     ctx: context, routeName: ProductDetails.routeName);
-            GlobalMethods.navigateTo(
-                ctx: context, routeName:ProductDetailsView.routeName);
+            Navigator.pushNamed(context,ProductDetailsView.routeName,
+                arguments: productModel.id);
           },
           borderRadius: BorderRadius.circular(12),
           child: Column(children: [
@@ -94,7 +92,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
                       salePrice:productModel.salePrice ,
                       price:productModel.price,
                       textPrice: _quantityTextController.text  ,
-                      isOnSale: true,
+                      isOnSale:productModel.isOnSale,
                     ),
                   ),
                   Flexible(

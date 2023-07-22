@@ -2,11 +2,13 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
+import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/price_widget.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
+import 'package:provider/provider.dart';
 
 class OnSaleItems extends StatelessWidget {
   const OnSaleItems({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class OnSaleItems extends StatelessWidget {
     final Color color = Utils(context).color;
     final theme = Utils(context).getTheme;
     Size size = Utils(context).getScreenSize;
+    final productModel = Provider.of<ProductModel>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -24,8 +27,8 @@ class OnSaleItems extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            GlobalMethods.navigateTo(
-                ctx: context, routeName: ProductDetailsView.routeName);
+            Navigator.pushNamed(context,ProductDetailsView.routeName,
+                arguments: productModel.id);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -36,7 +39,7 @@ class OnSaleItems extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FancyShimmerImage(
-                        imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+                        imageUrl: productModel.imageUrl,
                         height: size.width * 0.22,
                         width: size.width * 0.22,
                         boxFit: BoxFit.fill,
@@ -44,9 +47,10 @@ class OnSaleItems extends StatelessWidget {
                       Column(
                         children: [
                           CustomTextWidget(
-                            text: '1KG',
+                            text: productModel.isPiece ? "1 piece" :"1 Kg",
                             color: color,
-                            textSize: 22,
+                            textSize: 18,
+                            maxLines: 1,
                             isTitle: true,
                           ),
                           const SizedBox(
@@ -69,14 +73,14 @@ class OnSaleItems extends StatelessWidget {
                       )
                     ],
                   ),
-                  const PriceWidget(
-                    salePrice:3.5 ,
-                    price:7.8 ,
+                   PriceWidget(
+                    salePrice: productModel.salePrice ,
+                    price:productModel.price ,
                     textPrice: '1',
-                    isOnSale: false,
+                    isOnSale: true,
                   ),
                   const SizedBox(height: 5),
-                  CustomTextWidget(text: 'Product title', color: color, textSize: 16, isTitle: true,),
+                  CustomTextWidget(text: productModel.title, color: color, textSize: 16, isTitle: true,),
                   const SizedBox(height: 5),
                 ]),
           ),

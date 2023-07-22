@@ -7,6 +7,14 @@ class ProductsProvider with ChangeNotifier {
     return _productsList;
   }
 
+  List<ProductModel> get getOnSaleProducts {
+    return _productsList.where((element) => element.isOnSale).toList();
+  }
+
+  ProductModel findProdById(String productId) {
+    return _productsList.firstWhere((element) => element.id == productId);
+  }
+
   static final List<ProductModel> _productsList = [
     ProductModel(
       id: 'Apricot',
