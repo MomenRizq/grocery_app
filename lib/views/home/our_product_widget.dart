@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/models/products_model.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/add_to_card_widget_home.dart';
@@ -39,6 +40,8 @@ class _OurProductWidgetState extends State<OurProductWidget> {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
     final productModel = Provider.of<ProductModel>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -143,7 +146,10 @@ class _OurProductWidgetState extends State<OurProductWidget> {
               ),
             ),
             const Spacer(),
-            AddToCardWidgetHome()
+            AddToCardWidgetHome(
+              id: productModel.id,
+              qun: _quantityTextController.text,
+            )
           ]),
         ),
       ),

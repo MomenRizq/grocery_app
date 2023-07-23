@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/widgets/add_to_card_widget_details.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
@@ -31,11 +32,13 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
     final productProviders = Provider.of<ProductsProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     final getCurrProduct = productProviders.findProdById(widget.id);
     double usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
     double totalPrice = usedPrice * int.parse(_quantityTextController.text);
+    bool? _isInCart = cartProvider.getCartItems.containsKey(getCurrProduct.id);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -233,12 +236,24 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: _isInCart
+                          ? (){
+                        cartProvider.removeOneItem(getCurrProduct.id);
+                      }
+                          : () {
+                        // if (_isInCart) {
+                        //   return;
+                        // }
+                        cartProvider.addProductsToCart(
+                            productId: getCurrProduct.id,
+                            quantity: int.parse(
+                                _quantityTextController.text));
+                      },
                       borderRadius: BorderRadius.circular(10),
                       child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: CustomTextWidget(
-                              text: 'Add to cart',
+                              text: _isInCart ? 'In cart' : 'Add to cart',
                               color: Colors.white,
                               textSize: 18)),
                     ),

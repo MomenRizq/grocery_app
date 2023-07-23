@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/models/products_model.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
+import 'package:grocery_app/provider/wishlist_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/price_widget.dart';
@@ -19,6 +21,9 @@ class OnSaleItems extends StatelessWidget {
     final theme = Utils(context).getTheme;
     Size size = Utils(context).getScreenSize;
     final productModel = Provider.of<ProductModel>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    bool? _isInCart = cartProvider.getCartItems.containsKey(productModel.id);
+    bool? _isInWishlist = WishlistProvider().getWishlistItems.containsKey(productModel.id);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -59,14 +64,21 @@ class OnSaleItems extends StatelessWidget {
                           Row(
                             children: [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: _isInCart
+                                    ? (){
+                                  cartProvider.removeOneItem(productModel.id);
+                                }
+                                    :() {
+                                  cartProvider.addProductsToCart(productId: productModel.id,
+                                      quantity: 1);
+                                },
                                 child: Icon(
-                                  IconlyLight.bag2,
+                                  _isInCart ?IconlyBold.bag2 :IconlyLight.bag2,
                                   size: 22,
-                                  color: color,
+                                  color:_isInCart ?Colors.green: color,
                                 ),
                               ),
-                              HeartButton(),
+                              HeartButton(isInWishlist: _isInWishlist,productId: productModel.id,),
                             ],
                           ),
                         ],

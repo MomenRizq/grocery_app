@@ -26,10 +26,10 @@ class HomeViewBody extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const CustomSwiperWidget(),
             const SizedBox(
-              height: 6,
+              height: 40,
             ),
+            const CustomSwiperWidget(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(

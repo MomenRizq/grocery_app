@@ -3,27 +3,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
+import 'package:grocery_app/models/cart_model.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
+import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/cart/widgets/custom_quantity_widget.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
+import 'package:provider/provider.dart';
 
 
 import '../../services/utils.dart';
 
 
 class CartViewBody extends StatelessWidget{
-  const CartViewBody({Key? key}) : super(key: key);
+  const CartViewBody({Key? key, }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
+    final productProvider = Provider.of<ProductsProvider>(context);
+    final cartModel = Provider.of<CartModel>(context);
+    final getCurrProduct = productProvider.findProdById(cartModel.productId);
+    double usedPrice = getCurrProduct.isOnSale
+        ? getCurrProduct.salePrice
+        : getCurrProduct.price;
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return GestureDetector(
       onTap: () {
-        GlobalMethods.navigateTo(
-            ctx: context, routeName: ProductDetailsView.routeName);
+        Navigator.pushNamed(context,ProductDetailsView.routeName,
+            arguments: cartModel.productId);
       },
       child: Row(
         children: [
@@ -44,18 +57,20 @@ class CartViewBody extends StatelessWidget{
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: FancyShimmerImage(
-                        imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+                        imageUrl: getCurrProduct.imageUrl,
                         boxFit: BoxFit.fill,
                       ),
                     ),
-                    CustomQuantityWidget(color: color,size: size),
+                    CustomQuantityWidget(q:cartModel.quantity),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              cartProvider.removeOneItem(cartModel.productId);
+                            },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
                               color: Colors.red,
@@ -67,7 +82,7 @@ class CartViewBody extends StatelessWidget{
                           ),
                           const HeartButton(),
                           CustomTextWidget(
-                            text: '\$0.29',
+                            text: '\$${usedPrice.toStringAsFixed(2)}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

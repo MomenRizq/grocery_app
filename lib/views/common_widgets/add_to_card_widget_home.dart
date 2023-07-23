@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/models/products_model.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
+import 'package:provider/provider.dart';
 
 class AddToCardWidgetHome extends StatelessWidget {
-  const AddToCardWidgetHome({Key? key}) : super(key: key);
+  const AddToCardWidgetHome({Key? key, required this.id, required this.qun})
+      : super(key: key);
+  final String id;
+
+  final String qun;
 
   @override
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
+    final cartProvider = Provider.of<CartProvider>(context);
+    final productModel = Provider.of<ProductModel>(context);
+    bool? _isInCart = cartProvider.getCartItems.containsKey(productModel.id);
     return SizedBox(
       width: double.infinity,
       child: TextButton(
@@ -35,16 +45,17 @@ class AddToCardWidgetHome extends StatelessWidget {
                   //     productId: productModel.id,
                   //     quantity: int.parse(_quantityTextController.text));
                 },*/
-            (){},
-        child: CustomTextWidget(
-          text: /*_isInCart ? 'In cart' :*/ 'Add to cart',
-          maxLines: 1,
-          color: color,
-          textSize: 20,
-        ),
+            _isInCart
+                ? () {
+                    cartProvider.removeOneItem(productModel.id);
+                  }
+                : () {
+                    cartProvider.addProductsToCart(
+                        productId: id, quantity: int.parse(qun));
+                  },
         style: ButtonStyle(
             backgroundColor:
-            MaterialStateProperty.all(Theme.of(context).cardColor),
+                MaterialStateProperty.all(Theme.of(context).cardColor),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               const RoundedRectangleBorder(
@@ -54,6 +65,12 @@ class AddToCardWidgetHome extends StatelessWidget {
                 ),
               ),
             )),
+        child: CustomTextWidget(
+          text: _isInCart ? 'In cart' : 'Add to cart',
+          maxLines: 1,
+          color: color,
+          textSize: 20,
+        ),
       ),
     );
   }

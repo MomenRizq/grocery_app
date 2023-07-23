@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/inner_screens/cat_screen.dart';
+import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 
 import 'package:provider/provider.dart';
@@ -19,7 +21,9 @@ class CustomCategoriesItem extends StatelessWidget {
     final Color color = themeState.getDarkTheme ? Colors.white : Colors.black;
     return InkWell(
       onTap: () {
-        print('Category pressed');
+
+        Navigator.pushNamed(context,CategoryScreen.routeName,
+            arguments:catText);
       },
       child: Container(
         height: _screenWidth * 0.6,

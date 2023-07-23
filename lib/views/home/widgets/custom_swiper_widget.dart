@@ -14,12 +14,22 @@ class CustomSwiperWidget extends StatelessWidget {
       height: size.height * 0.33,
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
-          return Image.asset(
-            offerImages[index],
-            fit: BoxFit.fill,
+          return Card(
+            margin: new EdgeInsets.only(
+                bottom: 30
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.asset(
+                offerImages[index],
+                fit: BoxFit.fill,
+              ),
+            ),
           );
         },
         autoplay: true,
+        viewportFraction: 0.9,
+        scale: 0.95,
         itemCount: offerImages.length,
         pagination: const SwiperPagination(
             alignment: Alignment.bottomCenter,
