@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/provider/viewed_prod_provider.dart';
 import 'package:grocery_app/views/common_widgets/back_widget.dart';
 import 'package:grocery_app/views/common_widgets/empty_screen.dart';
 import 'package:grocery_app/views/viewed_recently/viewed_widget.dart';
+import 'package:provider/provider.dart';
 import '../../services/global_methods.dart';
 import '../../services/utils.dart';
 import '../common_widgets/custom_text_widget.dart';
@@ -25,8 +27,13 @@ class _ViewedRecentlyScreenState extends State<ViewedRecentlyScreen> {
     // Size size = Utils(context).getScreenSize;
     bool _isEmpty = true;
     // Size size = Utils(context).getScreenSize;
+    final viewedProdProvider = Provider.of<ViewedProdProvider>(context);
+    final viewedProdItemsList = viewedProdProvider.getViewedProdlistItems.values
+        .toList()
+        .reversed
+        .toList();
 
-    return _isEmpty
+    return viewedProdItemsList.isEmpty
         ? const EmptyScreen(
             title: 'Your history is empty',
             subtitle: 'No products has been viewed yet!',
@@ -63,11 +70,13 @@ class _ViewedRecentlyScreenState extends State<ViewedRecentlyScreen> {
                   Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
             ),
             body: ListView.builder(
-                itemCount: 10,
+                itemCount: viewedProdItemsList.length,
                 itemBuilder: (ctx, index) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-                    child: ViewedRecentlyWidget(),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                    child: ChangeNotifierProvider.value(
+                        value: viewedProdItemsList[index],
+                        child: const ViewedRecentlyWidget()),
                   );
                 }),
           );

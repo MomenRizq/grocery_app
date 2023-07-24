@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_body.dart';
 import 'package:grocery_app/provider/products_provider.dart';
+import 'package:grocery_app/provider/viewed_prod_provider.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
@@ -24,35 +25,43 @@ class ProductDetailsView extends StatelessWidget {
     final productId = ModalRoute.of(context)!.settings.arguments as String;
     final getCurrProduct = productProviders.findProdById(productId);
 
-    return Scaffold(
-      appBar: AppBar(
-          leading: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () =>
-            Navigator.canPop(context) ? Navigator.pop(context) : null,
-            child: Icon(
-              IconlyLight.arrowLeft2,
-              color: color,
-              size: 24,
+    final viewedProdProvider = Provider.of<ViewedProdProvider>(context);
+
+    return WillPopScope(
+      onWillPop: () async {
+        viewedProdProvider.addProductToHistory(productId: productId);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+            leading: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () =>
+              Navigator.canPop(context) ? Navigator.pop(context) : null,
+              child: Icon(
+                IconlyLight.arrowLeft2,
+                color: color,
+                size: 24,
+              ),
+            ),
+            elevation: 0,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor),
+        body: Column(children: [
+          Flexible(
+            flex: 2,
+            child: FancyShimmerImage(
+              imageUrl: getCurrProduct.imageUrl,
+              boxFit: BoxFit.scaleDown,
+              width: size.width,
+              // height: screenHeight * .4,
             ),
           ),
-          elevation: 0,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor),
-      body: Column(children: [
-        Flexible(
-          flex: 2,
-          child: FancyShimmerImage(
-            imageUrl: getCurrProduct.imageUrl,
-            boxFit: BoxFit.scaleDown,
-            width: size.width,
-            // height: screenHeight * .4,
-          ),
-        ),
-        Flexible(
-          flex: 3,
-          child: ProductDetailsBody(id:productId )
-        )
-      ]),
+          Flexible(
+            flex: 3,
+            child: ProductDetailsBody(id:productId )
+          )
+        ]),
+      ),
     );
   }
 
