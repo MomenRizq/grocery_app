@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
+import 'package:grocery_app/provider/wishlist_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/add_to_card_widget_home.dart';
@@ -41,6 +42,9 @@ class _OurProductWidgetState extends State<OurProductWidget> {
     Size size = Utils(context).getScreenSize;
     final productModel = Provider.of<ProductModel>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+    wishlistProvider.getWishlistItems.containsKey(productModel.id);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -78,8 +82,8 @@ class _OurProductWidgetState extends State<OurProductWidget> {
                   Flexible(
                       flex: 1,
                       child: HeartButton(
-                        //productId: productModel.id,
-                        //isInWishlist: _isInWishlist,
+                        productId: productModel.id,
+                        isInWishlist: _isInWishlist,
                       )),
                 ],
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:grocery_app/inner_screens/product_details/widgets/add_to_card_widget_details.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/products_provider.dart';
+import 'package:grocery_app/provider/wishlist_provider.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
@@ -39,6 +40,9 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
         : getCurrProduct.price;
     double totalPrice = usedPrice * int.parse(_quantityTextController.text);
     bool? _isInCart = cartProvider.getCartItems.containsKey(getCurrProduct.id);
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+    wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -63,7 +67,7 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                     isTitle: true,
                   ),
                 ),
-                const HeartButton(),
+                HeartButton(productId: getCurrProduct.id,isInWishlist: _isInWishlist,),
               ],
             ),
           ),

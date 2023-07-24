@@ -6,6 +6,7 @@ import 'package:grocery_app/inner_screens/product_details/product_details_view.d
 import 'package:grocery_app/models/cart_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/products_provider.dart';
+import 'package:grocery_app/provider/wishlist_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/cart/widgets/custom_quantity_widget.dart';
@@ -32,6 +33,9 @@ class CartViewBody extends StatelessWidget{
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
     final cartProvider = Provider.of<CartProvider>(context);
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+    wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
 
     return GestureDetector(
       onTap: () {
@@ -80,7 +84,7 @@ class CartViewBody extends StatelessWidget{
                           const SizedBox(
                             height: 5,
                           ),
-                          const HeartButton(),
+                         HeartButton(productId: getCurrProduct.id,isInWishlist: _isInWishlist,),
                           CustomTextWidget(
                             text: '\$${usedPrice.toStringAsFixed(2)}',
                             color: color,
