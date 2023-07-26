@@ -36,8 +36,11 @@ class ProductDetailsView extends StatelessWidget {
         appBar: AppBar(
             leading: InkWell(
               borderRadius: BorderRadius.circular(12),
-              onTap: () =>
-              Navigator.canPop(context) ? Navigator.pop(context) : null,
+              onTap: () {
+              Navigator.canPop(context) ? Navigator.pop(context) : null ;
+
+              viewedProdProvider.addProductToHistory(productId: productId);
+              },
               child: Icon(
                 IconlyLight.arrowLeft2,
                 color: color,

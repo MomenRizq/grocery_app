@@ -6,19 +6,23 @@ class AuthButton extends StatelessWidget {
     Key? key,
     required this.fct,
     required this.buttonText,
-    this.primary = Colors.white38,
+    this.primary = Colors.red,
   }) : super(key: key);
   final Function fct;
   final String buttonText;
   final Color primary;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 50,
       width: double.infinity,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: primary, // background (button) color
+            primary: primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+
           ),
           onPressed: () {
             fct();

@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/inner_screens/product_details/widgets/add_to_card_widget_details.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/products_provider.dart';
 import 'package:grocery_app/provider/wishlist_provider.dart';
+import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_quantity_controller.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
@@ -245,9 +248,16 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                         cartProvider.removeOneItem(getCurrProduct.id);
                       }
                           : () {
-                        // if (_isInCart) {
-                        //   return;
-                        // }
+                        final User? user =
+                            KauthInstance.currentUser;
+
+                        if (user == null) {
+                          GlobalMethods.errorDialog(
+                              subtitle:
+                              'No user found, Please login first',
+                              context: context);
+                          return;
+                        }
                         cartProvider.addProductsToCart(
                             productId: getCurrProduct.id,
                             quantity: int.parse(

@@ -1,6 +1,8 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
@@ -71,6 +73,16 @@ class OnSaleItems extends StatelessWidget {
                                   cartProvider.removeOneItem(productModel.id);
                                 }
                                     :() {
+                                  final User? user =
+                                      KauthInstance.currentUser;
+
+                                  if (user == null) {
+                                    GlobalMethods.errorDialog(
+                                        subtitle:
+                                        'No user found, Please login first',
+                                        context: context);
+                                    return;
+                                  }
                                   cartProvider.addProductsToCart(productId: productModel.id,
                                       quantity: 1);
                                 },

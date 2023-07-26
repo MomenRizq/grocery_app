@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/inner_screens/cat_screen.dart';
 import 'package:grocery_app/inner_screens/on_sale_screen.dart';
@@ -20,7 +21,8 @@ import 'package:provider/provider.dart';
 import 'consts/theme_data.dart';
 import 'provider/wishlist_provider.dart';
 
-void main() {
+void main()async {
+
   runApp(MyApp());
 }
 
@@ -45,42 +47,63 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+  final Future<FirebaseApp> _firebaseInitialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) {
-          return themeChangeProvider;
-        }),
-        ChangeNotifierProvider(create: (context) => ProductsProvider()),
-        ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => WishlistProvider()),
-        ChangeNotifierProvider(create: (context) => ViewedProdProvider()),
+    return FutureBuilder(
+      future: _firebaseInitialization,
+      builder: (context,snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+            home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                )),
+          );
+        } else if (snapshot.hasError) {
+          const MaterialApp(
+            home: Scaffold(
+                body: Center(
+                  child: Text('An error occured'),
+                )),
+          );
+        }
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) {
+              return themeChangeProvider;
+            }),
+            ChangeNotifierProvider(create: (context) => ProductsProvider()),
+            ChangeNotifierProvider(create: (context) => CartProvider()),
+            ChangeNotifierProvider(create: (context) => WishlistProvider()),
+            ChangeNotifierProvider(create: (context) => ViewedProdProvider()),
 
-      ],
-      child:
-          Consumer<DarkThemeProvider>(builder: (context, themeProvider, child) {
-        return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: Styles.themeData(themeProvider.getDarkTheme, context),
-            home: const BottomBarView(),
-            routes: {
-              OnSaleScreen.routeName: (context) => const OnSaleScreen(),
-              OurProductScreen.routeName: (context) => const OurProductScreen(),
-              ProductDetailsView.routeName: (context) =>
-                  const ProductDetailsView(),
-              WishlistScreen.routeName: (ctx) => const WishlistScreen(),
-              OrdersScreen.routeName: (ctx) => const OrdersScreen(),
-              ViewedRecentlyScreen.routeName: (ctx) =>
-                  const ViewedRecentlyScreen(),
-              RegisterScreen.routeName: (ctx) => const RegisterScreen(),
-              LoginScreen.routeName: (ctx) => const LoginScreen(),
-              ForgetPasswordScreen.routeName: (ctx) =>
-                  const ForgetPasswordScreen(),
-              CategoryScreen.routeName:(ctx)=> const CategoryScreen()
-            });
-      }),
+          ],
+          child:
+              Consumer<DarkThemeProvider>(builder: (context, themeProvider, child) {
+            return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Flutter Demo',
+                theme: Styles.themeData(themeProvider.getDarkTheme, context),
+                home: const LoginScreen(),
+                routes: {
+                  OnSaleScreen.routeName: (context) => const OnSaleScreen(),
+                  OurProductScreen.routeName: (context) => const OurProductScreen(),
+                  ProductDetailsView.routeName: (context) =>
+                      const ProductDetailsView(),
+                  WishlistScreen.routeName: (ctx) => const WishlistScreen(),
+                  OrdersScreen.routeName: (ctx) => const OrdersScreen(),
+                  ViewedRecentlyScreen.routeName: (ctx) =>
+                      const ViewedRecentlyScreen(),
+                  RegisterScreen.routeName: (ctx) => const RegisterScreen(),
+                  LoginScreen.routeName: (ctx) => const LoginScreen(),
+                  ForgetPasswordScreen.routeName: (ctx) =>
+                      const ForgetPasswordScreen(),
+                  CategoryScreen.routeName:(ctx)=> const CategoryScreen()
+                });
+          }),
+        );
+      }
     );
   }
 }

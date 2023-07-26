@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
 import 'package:grocery_app/models/viewed_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
@@ -83,10 +85,20 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
                     borderRadius: BorderRadius.circular(12),
                     onTap: _isInCart
                         ? () => cartProvider.removeOneItem(getCurrProduct.id)
-                        : () => cartProvider.addProductsToCart(
+                        : () {
+                            final User? user = KauthInstance.currentUser;
+
+                            if (user == null) {
+                              GlobalMethods.errorDialog(
+                                  subtitle: 'No user found, Please login first',
+                                  context: context);
+                              return;
+                            }
+                            cartProvider.addProductsToCart(
                               productId: getCurrProduct.id,
                               quantity: 1,
-                            ),
+                            );
+                          },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Icon(

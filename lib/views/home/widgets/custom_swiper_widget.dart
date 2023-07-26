@@ -15,8 +15,9 @@ class CustomSwiperWidget extends StatelessWidget {
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Card(
-            margin: new EdgeInsets.only(
-                bottom: 30
+            margin: new EdgeInsets.only(bottom: 30),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25.0),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
@@ -34,7 +35,7 @@ class CustomSwiperWidget extends StatelessWidget {
         pagination: const SwiperPagination(
             alignment: Alignment.bottomCenter,
             builder: DotSwiperPaginationBuilder(
-                color: Colors.white, activeColor: Colors.red)),
+                color: Colors.grey, activeColor: Colors.red)),
         // control: const SwiperControl(color: Colors.black),
       ),
     );

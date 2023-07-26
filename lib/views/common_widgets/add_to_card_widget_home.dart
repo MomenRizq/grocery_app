@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
+import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +53,14 @@ class AddToCardWidgetHome extends StatelessWidget {
                     cartProvider.removeOneItem(productModel.id);
                   }
                 : () {
+                    final User? user = KauthInstance.currentUser;
+
+                    if (user == null) {
+                      GlobalMethods.errorDialog(
+                          subtitle: 'No user found, Please login first',
+                          context: context);
+                      return;
+                    }
                     cartProvider.addProductsToCart(
                         productId: id, quantity: int.parse(qun));
                   },
