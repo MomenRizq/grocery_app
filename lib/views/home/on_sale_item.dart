@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
+import 'package:grocery_app/models/cart_model.dart';
 import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/wishlist_provider.dart';
@@ -27,7 +28,7 @@ class OnSaleItems extends StatelessWidget {
     bool? _isInCart = cartProvider.getCartItems.containsKey(productModel.id);
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     bool? _isInWishlist =
-    wishlistProvider.getWishlistItems.containsKey(productModel.id);
+        wishlistProvider.getWishlistItems.containsKey(productModel.id);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -36,12 +37,13 @@ class OnSaleItems extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            Navigator.pushNamed(context,ProductDetailsView.routeName,
+            Navigator.pushNamed(context, ProductDetailsView.routeName,
                 arguments: productModel.id);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
@@ -56,7 +58,7 @@ class OnSaleItems extends StatelessWidget {
                       Column(
                         children: [
                           CustomTextWidget(
-                            text: productModel.isPiece ? "1 piece" :"1 Kg",
+                            text: productModel.isPiece ? "1 piece" : "1 Kg",
                             color: color,
                             textSize: 18,
                             maxLines: 1,
@@ -69,44 +71,57 @@ class OnSaleItems extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: _isInCart
-                                    ? (){
-                                  cartProvider.removeOneItem(productModel.id);
-                                }
-                                    :() {
-                                  final User? user =
-                                      KauthInstance.currentUser;
+                                    ? null
+                                    : () async{
+                                        final User? user =
+                                            KauthInstance.currentUser;
 
-                                  if (user == null) {
-                                    GlobalMethods.errorDialog(
-                                        subtitle:
-                                        'No user found, Please login first',
-                                        context: context);
-                                    return;
-                                  }
-                                  cartProvider.addProductsToCart(productId: productModel.id,
-                                      quantity: 1);
-                                },
+                                        if (user == null) {
+                                          GlobalMethods.errorDialog(
+                                              subtitle:
+                                                  'No user found, Please login first',
+                                              context: context);
+                                          return;
+                                        }
+                                        await GlobalMethods.addToCart(
+                                            productId: productModel.id,
+                                            quantity: 1,
+                                            context: context);
+                                        await cartProvider.fetchCart();
+                                        // cartProvider.addProductsToCart(productId: productModel.id,
+                                        //     quantity: 1);
+                                      },
                                 child: Icon(
-                                  _isInCart ?IconlyBold.bag2 :IconlyLight.bag2,
+                                  _isInCart
+                                      ? IconlyBold.bag2
+                                      : IconlyLight.bag2,
                                   size: 22,
-                                  color:_isInCart ?Colors.green: color,
+                                  color: _isInCart ? Colors.green : color,
                                 ),
                               ),
-                              HeartButton(isInWishlist: _isInWishlist,productId: productModel.id,),
+                              HeartButton(
+                                isInWishlist: _isInWishlist,
+                                productId: productModel.id,
+                              ),
                             ],
                           ),
                         ],
                       )
                     ],
                   ),
-                   PriceWidget(
-                    salePrice: productModel.salePrice ,
-                    price:productModel.price ,
+                  PriceWidget(
+                    salePrice: productModel.salePrice,
+                    price: productModel.price,
                     textPrice: '1',
                     isOnSale: true,
                   ),
                   const SizedBox(height: 5),
-                  CustomTextWidget(text: productModel.title, color: color, textSize: 16, isTitle: true,),
+                  CustomTextWidget(
+                    text: productModel.title,
+                    color: color,
+                    textSize: 16,
+                    isTitle: true,
+                  ),
                   const SizedBox(height: 5),
                 ]),
           ),

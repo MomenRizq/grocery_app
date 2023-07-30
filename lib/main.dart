@@ -12,6 +12,7 @@ import 'package:grocery_app/views/auth/login.dart';
 import 'package:grocery_app/views/auth/register.dart';
 import 'package:grocery_app/views/bottom_bar_view.dart';
 import 'package:grocery_app/inner_screens/product_details/product_details_view.dart';
+import 'package:grocery_app/views/fetch_screen.dart';
 import 'package:grocery_app/views/home/home_view.dart';
 import 'package:grocery_app/views/orders/orders_screen.dart';
 import 'package:grocery_app/views/viewed_recently/viewed_recently.dart';
@@ -55,6 +56,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context,snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
@@ -62,6 +64,7 @@ class _MyAppState extends State<MyApp> {
           );
         } else if (snapshot.hasError) {
           const MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: Scaffold(
                 body: Center(
                   child: Text('An error occured'),
@@ -85,7 +88,7 @@ class _MyAppState extends State<MyApp> {
                 debugShowCheckedModeBanner: false,
                 title: 'Flutter Demo',
                 theme: Styles.themeData(themeProvider.getDarkTheme, context),
-                home: const LoginScreen(),
+                home: const FetchScreen(),
                 routes: {
                   OnSaleScreen.routeName: (context) => const OnSaleScreen(),
                   OurProductScreen.routeName: (context) => const OurProductScreen(),

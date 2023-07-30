@@ -22,12 +22,24 @@ class HomeViewBody extends StatelessWidget {
     Size size = utils.getScreenSize;
     final productProviders = Provider.of<ProductsProvider>(context);
     List<ProductModel> allProducts = productProviders.getProducts;
+    Color color = utils.color;
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: CustomTextWidget(
+          text: 'Grocery store',
+          color: color,
+          textSize: 24,
+          isTitle: true,
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(
-              height: 40,
+              height: 5,
             ),
             const CustomSwiperWidget(),
             Padding(
@@ -89,10 +101,11 @@ class HomeViewBody extends StatelessWidget {
               // crossAxisSpacing: 10,
               childAspectRatio: size.width / (size.height * 0.61),
               children: List.generate(
-                  allProducts.length < 4 ? 4 : allProducts.length, (index) {
+                  allProducts.length < 4
+                      ? allProducts.length // length 3
+                      : 4, (index) {
                 return ChangeNotifierProvider.value(
-                  value: allProducts[index],
-                    child: OurProductWidget());
+                    value: allProducts[index], child: const OurProductWidget());
               }),
             )
           ],

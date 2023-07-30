@@ -14,6 +14,8 @@ import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/cart_model.dart';
+
 class ProductDetailsBody extends StatefulWidget {
   const ProductDetailsBody({Key? key, required this.id}) : super(key: key);
   final String id;
@@ -37,6 +39,7 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
     final Color color = Utils(context).color;
     final productProviders = Provider.of<ProductsProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+   // final cartModel = Provider.of<CartModel>(context);
     final getCurrProduct = productProviders.findProdById(widget.id);
     double usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
@@ -45,7 +48,7 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
     bool? _isInCart = cartProvider.getCartItems.containsKey(getCurrProduct.id);
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     bool? _isInWishlist =
-    wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
+        wishlistProvider.getWishlistItems.containsKey(getCurrProduct.id);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -70,7 +73,10 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                     isTitle: true,
                   ),
                 ),
-                HeartButton(productId: getCurrProduct.id,isInWishlist: _isInWishlist,),
+                HeartButton(
+                  productId: getCurrProduct.id,
+                  isInWishlist: _isInWishlist,
+                ),
               ],
             ),
           ),
@@ -244,25 +250,28 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: _isInCart
-                          ? (){
-                        cartProvider.removeOneItem(getCurrProduct.id);
-                      }
-                          : () {
-                        final User? user =
-                            KauthInstance.currentUser;
+                          ? null
+                          : () async{
+                              final User? user = KauthInstance.currentUser;
 
-                        if (user == null) {
-                          GlobalMethods.errorDialog(
-                              subtitle:
-                              'No user found, Please login first',
-                              context: context);
-                          return;
-                        }
-                        cartProvider.addProductsToCart(
-                            productId: getCurrProduct.id,
-                            quantity: int.parse(
-                                _quantityTextController.text));
-                      },
+                              if (user == null) {
+                                GlobalMethods.errorDialog(
+                                    subtitle:
+                                        'No user found, Please login first',
+                                    context: context);
+                                return;
+                              }
+                              await GlobalMethods.addToCart(
+                                  productId: getCurrProduct.id,
+                                  quantity:
+                                      int.parse(_quantityTextController.text),
+                                  context: context);
+                              await cartProvider.fetchCart();
+                              // cartProvider.addProductsToCart(
+                              //     productId: getCurrProduct.id,
+                              //     quantity: int.parse(
+                              //         _quantityTextController.text));
+                            },
                       borderRadius: BorderRadius.circular(10),
                       child: Padding(
                           padding: const EdgeInsets.all(12.0),

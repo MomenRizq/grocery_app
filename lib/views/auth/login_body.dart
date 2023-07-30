@@ -11,6 +11,7 @@ import 'package:grocery_app/views/auth/widgets/google_button.dart';
 import 'package:grocery_app/views/auth/widgets/or_widget.dart';
 import 'package:grocery_app/views/bottom_bar_view.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
+import 'package:grocery_app/views/fetch_screen.dart';
 import 'package:grocery_app/views/loading_manager.dart';
 
 class LoginBody extends StatefulWidget {
@@ -48,7 +49,7 @@ class _LoginBodyState extends State<LoginBody> {
         ));
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const BottomBarView(),
+            builder: (context) => const FetchScreen(),
           ),
         );
         print('Succefully registered');
@@ -181,7 +182,7 @@ class _LoginBodyState extends State<LoginBody> {
                 fct: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const BottomBarView(),
+                      builder: (context) => const FetchScreen(),
                     ),
                   );
                 },

@@ -21,7 +21,7 @@ class WishlistScreen extends StatelessWidget {
     Size size = Utils(context).getScreenSize;
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     final wishlistItemsList =
-    wishlistProvider.getWishlistItems.values.toList().reversed.toList();
+        wishlistProvider.getWishlistItems.values.toList().reversed.toList();
     return wishlistItemsList.isEmpty
         ? const EmptyScreen(
             title: 'Your Wishlist Is Empty',
@@ -48,7 +48,10 @@ class WishlistScreen extends StatelessWidget {
                       GlobalMethods.warningDialog(
                           title: 'Empty your wishlist?',
                           subtitle: 'Are you sure?',
-                          fct: () {wishlistProvider.clearWishlist();},
+                          fct: () async {
+                            await wishlistProvider.clearOnlineWishlist();
+                            wishlistProvider.clearLocalWishlist();
+                          },
                           context: context);
                     },
                     icon: Icon(
@@ -62,8 +65,7 @@ class WishlistScreen extends StatelessWidget {
               itemCount: wishlistItemsList.length,
               itemBuilder: (context, index) {
                 return ChangeNotifierProvider.value(
-                  value: wishlistItemsList[index],
-                    child:  WishlistBody());
+                    value: wishlistItemsList[index], child: WishlistBody());
               },
             ));
   }

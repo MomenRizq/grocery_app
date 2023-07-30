@@ -41,7 +41,7 @@ class WishlistBody extends StatelessWidget {
           height: size.height * 0.15,
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            border: Border.all(color: color, width: 1),
+            border: Border.all(color: color.withOpacity(0.3), width: 1),
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Row(
@@ -50,8 +50,8 @@ class WishlistBody extends StatelessWidget {
                 flex: 2,
                 child: Container(
                   margin: const EdgeInsets.only(left: 8),
-                  width: size.width * 0.2,
-                  height: size.width * 0.25,
+                  width: size.width * 0.22,
+                  height: size.width * 0.22,
                   child: FancyShimmerImage(
                     imageUrl: getCurrProduct.imageUrl,
                     boxFit: BoxFit.fill,

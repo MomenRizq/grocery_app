@@ -22,6 +22,7 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   final TextEditingController? _searchTextController = TextEditingController();
   final FocusNode _searchTextFocusNode = FocusNode();
+  List<ProductModel> listProdcutSearch = [];
   @override
   void dispose() {
     _searchTextController!.dispose();
@@ -43,7 +44,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         title: CustomTextWidget(
-          text: 'All Products',
+          text: catName,
           color: color,
           textSize: 20.0,
           isTitle: true,
@@ -63,7 +64,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       focusNode: _searchTextFocusNode,
                       controller: _searchTextController,
                       onChanged: (valuee) {
-                        setState(() {});
+                        setState(() {
+                          listProdcutSearch =
+                              productProviders.searchQuery(valuee);
+                        });
                       },
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
@@ -94,16 +98,24 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ),
                   ),
                 ),
-                GridView.count(
+                _searchTextController!.text.isNotEmpty &&
+                    listProdcutSearch.isEmpty
+                    ? const EmptyProdWidget(
+                    text: 'No products found, please try another keyword')
+                    :GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: 2,
                   padding: EdgeInsets.zero,
                   // crossAxisSpacing: 10,
                   childAspectRatio: size.width / (size.height * 0.59),
-                  children: List.generate(productByCat.length, (index) {
+                  children: List.generate(_searchTextController!.text.isNotEmpty
+                      ? listProdcutSearch.length
+                      :productByCat.length, (index) {
                     return ChangeNotifierProvider.value(
-                      value: productByCat[index],
+                      value: _searchTextController!.text.isNotEmpty
+                          ? listProdcutSearch[index]
+                          :productByCat[index],
                       child: const OurProductWidget(),
                     );
                   }),

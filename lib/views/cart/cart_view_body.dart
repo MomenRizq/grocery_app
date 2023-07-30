@@ -72,8 +72,12 @@ class CartViewBody extends StatelessWidget{
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              cartProvider.removeOneItem(cartModel.productId);
+                            onTap: () async {
+                              await cartProvider.removeOneItem(
+                                cartId: cartModel.id,
+                                productId: cartModel.productId,
+                                quantity: cartModel.quantity,
+                              );
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
@@ -86,7 +90,7 @@ class CartViewBody extends StatelessWidget{
                           ),
                          HeartButton(productId: getCurrProduct.id,isInWishlist: _isInWishlist,),
                           CustomTextWidget(
-                            text: '\$${usedPrice.toStringAsFixed(2)}',
+                            text: '\$${(usedPrice * cartModel.quantity).toStringAsFixed(2)}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

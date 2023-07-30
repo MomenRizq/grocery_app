@@ -14,6 +14,7 @@ class customFormTextField extends StatelessWidget {
     return TextFormField(
       onChanged: onchanged,
       obscureText: obscureText!,
+      style: TextStyle(color: Colors.white),
       validator: (value) {
         if (value!.isEmpty) {
           return "$emptyText";
@@ -23,8 +24,10 @@ class customFormTextField extends StatelessWidget {
         labelText: lableText,
         labelStyle: TextStyle(color: Colors.white),
         hintText: hintText,
+        hintStyle:TextStyle(color: Colors.white.withOpacity(0.4)) ,
         filled: true,
         fillColor: Colors.white.withOpacity(0.0),
+        focusColor: Colors.white,
         contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 20),
         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey.shade400)),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/consts/firebase_consts.dart';
+import 'package:grocery_app/models/cart_model.dart';
 import 'package:grocery_app/models/products_model.dart';
 import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
@@ -49,10 +50,8 @@ class AddToCardWidgetHome extends StatelessWidget {
                   //     quantity: int.parse(_quantityTextController.text));
                 },*/
             _isInCart
-                ? () {
-                    cartProvider.removeOneItem(productModel.id);
-                  }
-                : () {
+                ? null
+                : () async{
                     final User? user = KauthInstance.currentUser;
 
                     if (user == null) {
@@ -61,8 +60,13 @@ class AddToCardWidgetHome extends StatelessWidget {
                           context: context);
                       return;
                     }
-                    cartProvider.addProductsToCart(
-                        productId: id, quantity: int.parse(qun));
+                    await GlobalMethods.addToCart(
+                        productId: id,
+                        quantity:int.parse(qun),
+                        context: context);
+                    await cartProvider.fetchCart();
+                    // cartProvider.addProductsToCart(
+                    //     productId: id, quantity: int.parse(qun));
                   },
         style: ButtonStyle(
             backgroundColor:

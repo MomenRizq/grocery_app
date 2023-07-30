@@ -11,6 +11,7 @@ import 'package:grocery_app/views/auth/widgets/auth_button.dart';
 import 'package:grocery_app/views/auth/widgets/custom_text_field.dart';
 import 'package:grocery_app/views/bottom_bar_view.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
+import 'package:grocery_app/views/fetch_screen.dart';
 import 'package:grocery_app/views/loading_manager.dart';
 
 class RegisterBody extends StatefulWidget {
@@ -61,7 +62,7 @@ class _RegisterBodyState extends State<RegisterBody> {
         });
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const BottomBarView(),
+            builder: (context) => const FetchScreen(),
           ),
         );
         print('Succefully registered');

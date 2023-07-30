@@ -29,6 +29,7 @@ class CartView extends StatelessWidget {
         : Scaffold(
             appBar: AppBar(
                 elevation: 0,
+                automaticallyImplyLeading: false,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: CustomTextWidget(
                   text: 'Cart (${cartItemsList.length})',
@@ -42,8 +43,9 @@ class CartView extends StatelessWidget {
                       GlobalMethods.warningDialog(
                           title: 'Empty your cart?',
                           subtitle: 'Are you sure?',
-                          fct: () {
-                            cartProvider.clearCart();
+                          fct: () async{
+                            await cartProvider.clearOnlineCart();
+                            cartProvider.clearLocalCart();
                           },
                           context: context);
                     },

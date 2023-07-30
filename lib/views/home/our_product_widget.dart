@@ -41,13 +41,12 @@ class _OurProductWidgetState extends State<OurProductWidget> {
     final Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;
     final productModel = Provider.of<ProductModel>(context);
-    final cartProvider = Provider.of<CartProvider>(context);
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     bool? _isInWishlist =
     wishlistProvider.getWishlistItems.containsKey(productModel.id);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(6.0),
       child: Material(
         borderRadius: BorderRadius.circular(12),
         color: Theme.of(context).cardColor,
@@ -60,7 +59,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
           child: Column(children: [
             FancyShimmerImage(
               imageUrl: productModel.imageUrl,
-              height: size.width * 0.21,
+              height: size.width * 0.20,
               width: size.width * 0.2,
               boxFit: BoxFit.fill,
             ),
