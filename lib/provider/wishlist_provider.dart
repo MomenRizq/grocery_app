@@ -20,13 +20,13 @@ class WishlistProvider with ChangeNotifier {
     if (userDoc == null) {
       return;
     }
-    final leng = userDoc.get('userWish').length;
+    final leng = userDoc.data().toString().contains('userWish') ?userDoc.get('userWish').length : 0;
     for (int i = 0; i < leng; i++) {
       _wishlistItems.putIfAbsent(
           userDoc.get('userWish')[i]['productId'],
               () => WishlistModel(
-            id: userDoc.get('userWish')[i]['wishlistId'],
-            productId: userDoc.get('userWish')[i]['productId'],
+            id: userDoc.data().toString().contains('userWish') ?userDoc.get('userWish')[i]['wishlistId']:"",
+            productId: userDoc.data().toString().contains('userWish') ?userDoc.get('userWish')[i]['productId']:"",
           ));
     }
     notifyListeners();

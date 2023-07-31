@@ -23,16 +23,16 @@ class ProductsProvider with ChangeNotifier {
         _productsList.insert(
             0,
             ProductModel(
-              id: element.get('id'),
-              title: element.get('title'),
-              imageUrl: element.get('imageUrl'),
-              productCategoryName: element.get('productCategoryName'),
+              id: element.data().toString().contains('id') ?element.get('id') :"",
+              title: element.data().toString().contains('title') ?element.get('title') :"",
+              imageUrl:element.data().toString().contains('imageUrl') ? element.get('imageUrl'):"",
+              productCategoryName:element.data().toString().contains('productCategoryName') ? element.get('productCategoryName'):"",
               price: double.parse(
-                element.get('price'),
+                element.data().toString().contains('price') ?element.get('price') :"",
               ),
-              salePrice: element.get('salePrice'),
-              isOnSale: element.get('isOnSale'),
-              isPiece: element.get('isPiece'),
+              salePrice: element.data().toString().contains('salePrice') ?element.get('salePrice'):"",
+              isOnSale: element.data().toString().contains('isOnSale') ?element.get('isOnSale'):"",
+              isPiece: element.data().toString().contains('isPiece') ?element.get('isPiece'):"",
             ));
       });
     });

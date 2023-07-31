@@ -31,19 +31,19 @@ class _LoginBodyState extends State<LoginBody> {
   final _formKey = GlobalKey<FormState>();
   var _obscureText = true;
 
-  @override
   void _submitFormOnLogin() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isLoading = true;
-    });
+
     if (isValid) {
       _formKey.currentState!.save();
+      setState(() {
+        _isLoading = true;
+      });
       try {
         await KauthInstance.signInWithEmailAndPassword(
             email: email.toString().toLowerCase().trim(), password: pass!);
-        await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Login successful'),
           backgroundColor: Colors.green,
         ));
@@ -52,7 +52,6 @@ class _LoginBodyState extends State<LoginBody> {
             builder: (context) => const FetchScreen(),
           ),
         );
-        print('Succefully registered');
       } on FirebaseException catch (error) {
         GlobalMethods.errorDialog(
             subtitle: '${error.message}', context: context);

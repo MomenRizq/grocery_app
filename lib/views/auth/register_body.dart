@@ -51,6 +51,8 @@ class _RegisterBodyState extends State<RegisterBody> {
         //Save user info
         final User? user = KauthInstance.currentUser;
         final _uid = user!.uid;
+        user.updateDisplayName(name);
+        user.reload();
         await FirebaseFirestore.instance.collection('users').doc(_uid).set({
           'id': _uid,
           'name': name,
@@ -183,7 +185,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                     emptyText:
                     "Address is empty ,write your address , please.",
                     onchanged: (data) {
-                      pass = data;
+                     address = data;
                     },
                   ),
                 ],

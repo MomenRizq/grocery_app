@@ -5,7 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/consts/firebase_consts.dart';
+import 'package:grocery_app/provider/cart_provider.dart';
 import 'package:grocery_app/provider/dark_theme_provider.dart';
+import 'package:grocery_app/provider/orders_provider.dart';
+import 'package:grocery_app/provider/wishlist_provider.dart';
 import 'package:grocery_app/services/global_methods.dart';
 import 'package:grocery_app/views/auth/forget_pass.dart';
 import 'package:grocery_app/views/auth/login.dart';
@@ -30,8 +33,8 @@ class _UserViewBodyState extends State<UserViewBody> {
   final TextEditingController _addressTextController =
       TextEditingController(text: "");
   final User? user = KauthInstance.currentUser;
-  String? _email;
-  String? _name;
+  String _email ="Email";
+  String _name = "Name";
   String? address;
   bool _isLoading = false;
 
@@ -55,20 +58,24 @@ class _UserViewBodyState extends State<UserViewBody> {
       String _uid = user!.uid;
 
       final DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+      await FirebaseFirestore.instance.collection('users').doc(_uid).get();
       if (userDoc == null) {
         return;
       } else {
-        _email = userDoc.get('email');
-        _name = userDoc.get('name');
-        address = userDoc.get('shipping-address');
-        _addressTextController.text = userDoc.get('shipping-address');
+        _email =userDoc.data().toString().contains('email') ? userDoc.get('email'):"";
+        _name = userDoc.data().toString().contains('name') ? userDoc.get('name'):"";
+        address =userDoc.data().toString().contains('shipping-address') ? userDoc.get('shipping-address'):"";
+        _addressTextController.text =userDoc.data().toString().contains('shipping-address') ?  userDoc.get('shipping-address'):"";
       }
     } catch (error) {
       setState(() {
         _isLoading = false;
       });
       GlobalMethods.errorDialog(subtitle: '$error', context: context);
+      print(_email);
+      print(_name);
+      print(_addressTextController.text);
+      print(address);
     } finally {
       setState(() {
         _isLoading = false;
@@ -80,6 +87,9 @@ class _UserViewBodyState extends State<UserViewBody> {
   Widget build(BuildContext context) {
     final themeState = Provider.of<DarkThemeProvider>(context);
     final Color color = themeState.getDarkTheme ? Colors.white : Colors.black87;
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final orderProvider = Provider.of<OrdersProvider>(context);
     return LoadingManager(
       isLoading: _isLoading,
       child: Center(
@@ -94,8 +104,8 @@ class _UserViewBodyState extends State<UserViewBody> {
                   height: 15,
                 ),
                 CustomUserInfo(
-                  name: 'Momen',
-                  email: 'momenrizq20@gmail.com',
+                  name: _isLoading ?"User" : _name,
+                  email: _isLoading ?"Email" :_email,
                   color: color,
                 ),
                 const Divider(
@@ -185,6 +195,8 @@ class _UserViewBodyState extends State<UserViewBody> {
                         subtitle: 'Do you wanna sign out?',
                         fct: () async {
                           await KauthInstance.signOut();
+                          wishlistProvider.clearLocalWishlist();
+                          cartProvider.clearLocalCart();
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const LoginScreen(),
@@ -235,7 +247,6 @@ class _UserViewBodyState extends State<UserViewBody> {
                         .update({
                       'shipping-address': _addressTextController.text,
                     });
-
                     Navigator.pop(context);
                     setState(() {
                       address = _addressTextController.text;

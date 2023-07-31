@@ -60,14 +60,14 @@ class CartProvider with ChangeNotifier {
     if (userDoc == null) {
       return;
     }
-    final leng = userDoc.get('userCart').length;
+    final leng = userDoc.data().toString().contains('userCart') ? userDoc.get('userCart').length : 0;
     for (int i = 0; i < leng; i++) {
       _cartItems.putIfAbsent(
           userDoc.get('userCart')[i]['productId'],
           () => CartModel(
-                id: userDoc.get('userCart')[i]['cartId'],
-                productId: userDoc.get('userCart')[i]['productId'],
-                quantity: userDoc.get('userCart')[i]['quantity'],
+                id: userDoc.data().toString().contains('userCart') ? userDoc.get('userCart')[i]['cartId'] : "",
+                productId:userDoc.data().toString().contains('userCart') ? userDoc.get('userCart')[i]['productId'] : "",
+                quantity:userDoc.data().toString().contains('userCart') ? userDoc.get('userCart')[i]['quantity'] : "",
               ));
     }
     notifyListeners();
@@ -78,7 +78,7 @@ class CartProvider with ChangeNotifier {
       required String productId,
       required int quantity}) async {
     final User? user = KauthInstance.currentUser;
-    await userCollection.doc(user!.uid).update({
+    await userCollection.doc(user!.uid ).update({
       'userCart': FieldValue.arrayRemove([
         {'cartId': cartId, 'productId': productId, 'quantity': quantity}
       ])
