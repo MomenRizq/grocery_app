@@ -41,10 +41,10 @@ class _ProductDetailsBodyState extends State<ProductDetailsBody> {
     final cartProvider = Provider.of<CartProvider>(context);
    // final cartModel = Provider.of<CartModel>(context);
     final getCurrProduct = productProviders.findProdById(widget.id);
-    double usedPrice = getCurrProduct.isOnSale
+    num usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
-    double totalPrice = usedPrice * int.parse(_quantityTextController.text);
+    num totalPrice = usedPrice * int.parse(_quantityTextController.text);
     bool? _isInCart = cartProvider.getCartItems.containsKey(getCurrProduct.id);
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     bool? _isInWishlist =

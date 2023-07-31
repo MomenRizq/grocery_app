@@ -29,7 +29,7 @@ class CartViewBody extends StatelessWidget{
     final productProvider = Provider.of<ProductsProvider>(context);
     final cartModel = Provider.of<CartModel>(context);
     final getCurrProduct = productProvider.findProdById(cartModel.productId);
-    double usedPrice = getCurrProduct.isOnSale
+    num usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
     final cartProvider = Provider.of<CartProvider>(context);

@@ -52,7 +52,7 @@ class OnSaleItems extends StatelessWidget {
                       FancyShimmerImage(
                         imageUrl: productModel.imageUrl,
                         height: size.width * 0.22,
-                        width: size.width * 0.22,
+                        width: size.width * 0.25,
                         boxFit: BoxFit.fill,
                       ),
                       Column(
@@ -95,7 +95,7 @@ class OnSaleItems extends StatelessWidget {
                                   _isInCart
                                       ? IconlyBold.bag2
                                       : IconlyLight.bag2,
-                                  size: 22,
+                                  size: 25,
                                   color: _isInCart ? Colors.green : color,
                                 ),
                               ),

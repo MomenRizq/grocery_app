@@ -30,7 +30,7 @@ class ProductsProvider with ChangeNotifier {
               price: double.parse(
                 element.data().toString().contains('price') ?element.get('price') :"",
               ),
-              salePrice: element.data().toString().contains('salePrice') ?element.get('salePrice'):"",
+              salePrice: element.data().toString().contains('salePrice')?element.get('salePrice'):"",
               isOnSale: element.data().toString().contains('isOnSale') ?element.get('isOnSale'):"",
               isPiece: element.data().toString().contains('isPiece') ?element.get('isPiece'):"",
             ));

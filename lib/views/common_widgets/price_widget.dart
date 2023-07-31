@@ -3,13 +3,14 @@ import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 class PriceWidget extends StatelessWidget {
   const PriceWidget({Key? key, required this.salePrice, required this.price, required this.textPrice, required this.isOnSale}) : super(key: key);
-  final double salePrice, price;
+  final double  price;
+  final num salePrice;
   final String textPrice;
   final bool isOnSale;
 
   @override
   Widget build(BuildContext context) {
-    double userPrice = isOnSale? salePrice : price;
+    num userPrice = isOnSale? salePrice : price;
     final Color color = Utils(context).color;
     return FittedBox(
         child: Row(

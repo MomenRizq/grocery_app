@@ -22,7 +22,7 @@ class WishlistBody extends StatelessWidget {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     final getCurrProduct =
     productProvider.findProdById(wishlistModel.productId);
-    double usedPrice = getCurrProduct.isOnSale
+    num usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
     bool? _isInWishlist =
@@ -47,7 +47,7 @@ class WishlistBody extends StatelessWidget {
           child: Row(
             children: [
               Flexible(
-                flex: 2,
+                flex: 4,
                 child: Container(
                   margin: const EdgeInsets.only(left: 8),
                   width: size.width * 0.22,

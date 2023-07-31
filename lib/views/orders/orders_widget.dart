@@ -43,7 +43,7 @@ class _OrderWidgetState extends State<OrderWidget> {
         width: size.width * 0.21,
         height: size.width *0.35,
         imageUrl:getCurrProduct.imageUrl,
-        boxFit: BoxFit.cover,
+        boxFit: BoxFit.fill,
       ),
       title: CustomTextWidget(text: '${getCurrProduct.title}  x${ordersModel.quantity}', color: color, textSize: 18),
       trailing: CustomTextWidget(text: orderDateToShow, color: color, textSize: 18),

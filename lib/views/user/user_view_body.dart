@@ -207,13 +207,6 @@ class _UserViewBodyState extends State<UserViewBody> {
                   },
                   color: color,
                 ),
-                CustomListTilesSubTitle(
-                  title: 'Title',
-                  subtitle: 'Subtitle',
-                  icon: Icons.settings,
-                  onPressed: () {},
-                  color: color,
-                ),
               ],
             ),
           ),

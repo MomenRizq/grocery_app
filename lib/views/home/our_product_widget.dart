@@ -46,7 +46,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
     wishlistProvider.getWishlistItems.containsKey(productModel.id);
 
     return Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.all(3.0),
       child: Material(
         borderRadius: BorderRadius.circular(12),
         color: Theme.of(context).cardColor,
@@ -57,11 +57,14 @@ class _OurProductWidgetState extends State<OurProductWidget> {
           },
           borderRadius: BorderRadius.circular(12),
           child: Column(children: [
-            FancyShimmerImage(
-              imageUrl: productModel.imageUrl,
-              height: size.width * 0.20,
-              width: size.width * 0.2,
-              boxFit: BoxFit.fill,
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: FancyShimmerImage(
+                imageUrl: productModel.imageUrl,
+                height: size.width * 0.22,
+                width: size.width * 0.25,
+                boxFit: BoxFit.fill,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -119,7 +122,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
                           width: 1,
                         ),
                         Flexible(
-                            flex: 4,
+                            flex: 3,
                             // TextField can be used also instead of the textFormField
                             child: TextFormField(
                               controller: _quantityTextController,
@@ -148,7 +151,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
                 ],
               ),
             ),
-            const Spacer(),
+             const Spacer(),
             AddToCardWidgetHome(
               id: productModel.id,
               qun: _quantityTextController.text,

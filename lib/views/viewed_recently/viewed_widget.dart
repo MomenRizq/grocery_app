@@ -30,11 +30,10 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
 
     final getCurrProduct =
         productProvider.findProdById(viewedProdModel.productId);
-    double usedPrice = getCurrProduct.isOnSale
+    num usedPrice = getCurrProduct.isOnSale
         ? getCurrProduct.salePrice
         : getCurrProduct.price;
     final cartProvider = Provider.of<CartProvider>(context);
-    final cartModel = Provider.of<CartModel>(context);
     bool? _isInCart = cartProvider.getCartItems.containsKey(getCurrProduct.id);
     Color color = Utils(context).color;
     Size size = Utils(context).getScreenSize;

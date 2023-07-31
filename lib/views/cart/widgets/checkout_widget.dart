@@ -79,7 +79,7 @@ class CheckoutWidget extends StatelessWidget {
                       backgroundColor: Colors.green,
                     ));
                   } catch (error) {
-                    await GlobalMethods.errorDialog(
+                    GlobalMethods.errorDialog(
                         subtitle: error.toString(), context: context);
                   } finally {}
                 });
