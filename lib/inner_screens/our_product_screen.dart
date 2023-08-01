@@ -54,7 +54,7 @@ class _OurProductScreenState extends State<OurProductScreen> {
       body: SingleChildScrollView(
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: SizedBox(
               height: kBottomNavigationBarHeight,
               child: TextField(

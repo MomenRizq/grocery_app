@@ -15,8 +15,15 @@ import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:grocery_app/views/common_widgets/heart_button.dart';
 import 'package:provider/provider.dart';
 
-class OnSaleItems extends StatelessWidget {
+class OnSaleItems extends StatefulWidget {
   const OnSaleItems({Key? key}) : super(key: key);
+
+  @override
+  State<OnSaleItems> createState() => _OnSaleItemsState();
+}
+
+class _OnSaleItemsState extends State<OnSaleItems> {
+  bool loadingCart = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,32 +79,60 @@ class OnSaleItems extends StatelessWidget {
                               GestureDetector(
                                 onTap: _isInCart
                                     ? null
-                                    : () async{
-                                        final User? user =
-                                            KauthInstance.currentUser;
+                                    : () async {
+                                        setState(() {
+                                          loadingCart = true;
+                                        });
+                                        try {
+                                          final User? user =
+                                              KauthInstance.currentUser;
 
-                                        if (user == null) {
-                                          GlobalMethods.errorDialog(
-                                              subtitle:
-                                                  'No user found, Please login first',
+                                          if (user == null) {
+                                            GlobalMethods.errorDialog(
+                                                subtitle:
+                                                    'No user found, Please login first',
+                                                context: context);
+                                            return;
+                                          }
+
+                                          await GlobalMethods.addToCart(
+                                              productId: productModel.id,
+                                              quantity: 1,
                                               context: context);
-                                          return;
+                                          await cartProvider.fetchCart();
+                                          setState(() {
+                                            loadingCart = false;
+                                          });
+                                        } catch (error) {
+                                          GlobalMethods.errorDialog(
+                                              subtitle: '$error',
+                                              context: context);
+                                          setState(() {
+                                            loadingCart = false;
+                                          });
+                                        } finally {
+                                          setState(() {
+                                            loadingCart = false;
+                                          });
                                         }
-                                        await GlobalMethods.addToCart(
-                                            productId: productModel.id,
-                                            quantity: 1,
-                                            context: context);
-                                        await cartProvider.fetchCart();
                                         // cartProvider.addProductsToCart(productId: productModel.id,
                                         //     quantity: 1);
                                       },
-                                child: Icon(
-                                  _isInCart
-                                      ? IconlyBold.bag2
-                                      : IconlyLight.bag2,
-                                  size: 25,
-                                  color: _isInCart ? Colors.green : color,
-                                ),
+                                child: loadingCart
+                                    ? const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator()),
+                                      )
+                                    : Icon(
+                                        _isInCart
+                                            ? IconlyBold.bag2
+                                            : IconlyLight.bag2,
+                                        size: 25,
+                                        color: _isInCart ? Colors.green : color,
+                                      ),
                               ),
                               HeartButton(
                                 isInWishlist: _isInWishlist,

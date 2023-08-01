@@ -179,7 +179,7 @@ class _LoginBodyState extends State<LoginBody> {
               ),
               AuthButton(
                 fct: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => const FetchScreen(),
                     ),

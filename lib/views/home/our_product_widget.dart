@@ -24,6 +24,7 @@ class OurProductWidget extends StatefulWidget {
 
 class _OurProductWidgetState extends State<OurProductWidget> {
   final _quantityTextController = TextEditingController();
+  bool loadingCart = false;
   @override
   void initState() {
     _quantityTextController.text = '1';
@@ -58,7 +59,7 @@ class _OurProductWidgetState extends State<OurProductWidget> {
           borderRadius: BorderRadius.circular(12),
           child: Column(children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 7.0),
               child: FancyShimmerImage(
                 imageUrl: productModel.imageUrl,
                 height: size.width * 0.22,

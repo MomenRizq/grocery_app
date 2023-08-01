@@ -183,7 +183,7 @@ class _UserViewBodyState extends State<UserViewBody> {
                   icon: user == null ? IconlyLight.login : IconlyLight.logout,
                   onPressed: () {
                     if (user == null) {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => const LoginScreen(),
                         ),
@@ -197,7 +197,7 @@ class _UserViewBodyState extends State<UserViewBody> {
                           await KauthInstance.signOut();
                           wishlistProvider.clearLocalWishlist();
                           cartProvider.clearLocalCart();
-                          Navigator.of(context).push(
+                          Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => const LoginScreen(),
                             ),

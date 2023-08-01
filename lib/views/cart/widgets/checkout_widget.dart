@@ -11,8 +11,15 @@ import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-class CheckoutWidget extends StatelessWidget {
+class CheckoutWidget extends StatefulWidget {
   const CheckoutWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CheckoutWidget> createState() => _CheckoutWidgetState();
+}
+
+class _CheckoutWidgetState extends State<CheckoutWidget> {
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +33,8 @@ class CheckoutWidget extends StatelessWidget {
     cartProvider.getCartItems.forEach((key, value) {
       final getCurrProduct = productProvider.findProdById(value.productId);
       total += (getCurrProduct.isOnSale
-          ? getCurrProduct.salePrice
-          : getCurrProduct.price) *
+              ? getCurrProduct.salePrice
+              : getCurrProduct.price) *
           value.quantity;
     });
     return SizedBox(
@@ -45,12 +52,16 @@ class CheckoutWidget extends StatelessWidget {
               onTap: () async {
                 User? user = KauthInstance.currentUser;
 
-                final productProvider = Provider.of<ProductsProvider>(context,listen: false);
+                final productProvider =
+                    Provider.of<ProductsProvider>(context, listen: false);
 
                 cartProvider.getCartItems.forEach((key, value) async {
                   final getCurrProduct = productProvider.findProdById(
                     value.productId,
                   );
+                  setState(() {
+                    _isLoading = true;
+                  });
                   try {
                     final orderId = const Uuid().v4();
                     await FirebaseFirestore.instance
@@ -61,8 +72,8 @@ class CheckoutWidget extends StatelessWidget {
                       'userId': user!.uid,
                       'productId': value.productId,
                       'price': (getCurrProduct.isOnSale
-                          ? getCurrProduct.salePrice
-                          : getCurrProduct.price) *
+                              ? getCurrProduct.salePrice
+                              : getCurrProduct.price) *
                           value.quantity,
                       'totalPrice': total,
                       'quantity': value.quantity,
@@ -73,29 +84,54 @@ class CheckoutWidget extends StatelessWidget {
                     await cartProvider.clearOnlineCart();
                     cartProvider.clearLocalCart();
                     orderProvider.fetchOrders();
+                    setState(() {
+                      _isLoading = false;
+                    });
 
-                    await ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    await ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
                       content: Text('Your order has been placed'),
                       backgroundColor: Colors.green,
                     ));
                   } catch (error) {
                     GlobalMethods.errorDialog(
                         subtitle: error.toString(), context: context);
-                  } finally {}
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  } finally {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }
                 });
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomTextWidget(
-                  text: 'Order Now',
-                  textSize: 20,
-                  color: Colors.white,
-                ),
+                child: _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator()),
+                      )
+                    : CustomTextWidget(
+                        text: 'Order Now',
+                        textSize: 20,
+                        color: Colors.white,
+                      ),
               ),
             ),
           ),
           const Spacer(),
-          FittedBox(child: CustomTextWidget(text: 'Total: \$${total.toStringAsFixed(2)}', color: color, textSize: 18, isTitle: true,))
+          FittedBox(
+              child: CustomTextWidget(
+            text: 'Total: \$${total.toStringAsFixed(2)}',
+            color: color,
+            textSize: 18,
+            isTitle: true,
+          ))
         ]),
       ),
     );

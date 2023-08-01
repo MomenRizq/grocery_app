@@ -9,12 +9,19 @@ import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/views/common_widgets/custom_text_widget.dart';
 import 'package:provider/provider.dart';
 
-class AddToCardWidgetHome extends StatelessWidget {
+class AddToCardWidgetHome extends StatefulWidget {
   const AddToCardWidgetHome({Key? key, required this.id, required this.qun})
       : super(key: key);
   final String id;
 
   final String qun;
+
+  @override
+  State<AddToCardWidgetHome> createState() => _AddToCardWidgetHomeState();
+}
+
+class _AddToCardWidgetHomeState extends State<AddToCardWidgetHome> {
+  bool loadingCart = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,20 +58,39 @@ class AddToCardWidgetHome extends StatelessWidget {
                 },*/
             _isInCart
                 ? null
-                : () async{
-                    final User? user = KauthInstance.currentUser;
+                : () async {
+                    setState(() {
+                      loadingCart = true;
+                    });
+                    try {
+                      final User? user = KauthInstance.currentUser;
 
-                    if (user == null) {
-                      GlobalMethods.errorDialog(
-                          subtitle: 'No user found, Please login first',
+                      if (user == null) {
+                        setState(() {
+                          loadingCart = false;
+                        });
+                        GlobalMethods.errorDialog(
+                            subtitle: 'No user found, Please login first',
+                            context: context);
+                        return;
+                      }
+                      await GlobalMethods.addToCart(
+                          productId: widget.id,
+                          quantity: int.parse(widget.qun),
                           context: context);
-                      return;
+                      await cartProvider.fetchCart();
+                      setState(() {
+                        loadingCart = false;
+                      });
+                    } catch (error) {
+                      setState(() {
+                        loadingCart = false;
+                      });
+                    }finally{
+                      setState(() {
+                        loadingCart = false;
+                      });
                     }
-                    await GlobalMethods.addToCart(
-                        productId: id,
-                        quantity:int.parse(qun),
-                        context: context);
-                    await cartProvider.fetchCart();
                     // cartProvider.addProductsToCart(
                     //     productId: id, quantity: int.parse(qun));
                   },
@@ -80,12 +106,18 @@ class AddToCardWidgetHome extends StatelessWidget {
                 ),
               ),
             )),
-        child: CustomTextWidget(
-          text: _isInCart ? 'In cart' : 'Add to cart',
-          maxLines: 1,
-          color: color,
-          textSize: 20,
-        ),
+        child: loadingCart
+            ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SizedBox(
+                    height: 15, width: 15, child: CircularProgressIndicator()),
+              )
+            : CustomTextWidget(
+                text: _isInCart ? 'In cart' : 'Add to cart',
+                maxLines: 1,
+                color: color,
+                textSize: 20,
+              ),
       ),
     );
   }
